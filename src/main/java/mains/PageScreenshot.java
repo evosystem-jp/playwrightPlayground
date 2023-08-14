@@ -61,17 +61,17 @@ public class PageScreenshot {
 							.setPermissions(Arrays.asList("geolocation"));
 
 					// ブラウザコンテキストを取得
-					BrowserContext context = browser.newContext(newContextOptions);
+					try (BrowserContext context = browser.newContext(newContextOptions)) {
+						// ページを取得
+						try (Page page = context.newPage()) {
+							// 画面遷移
+							page.navigate(TARGET_URL);
 
-					// ページを取得
-					Page page = context.newPage();
-
-					// 画面遷移
-					page.navigate(TARGET_URL);
-
-					// スクリーンショットを取得して保存
-					page.screenshot(new Page.ScreenshotOptions()
-							.setPath(Paths.get("screenshot/" + browserType.name() + ".png")));
+							// スクリーンショットを取得して保存
+							page.screenshot(new Page.ScreenshotOptions()
+									.setPath(Paths.get("screenshot/" + browserType.name() + ".png")));
+						}
+					}
 				}
 			}
 		} finally {
